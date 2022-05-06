@@ -36,7 +36,7 @@ function print_messages($user)
     $messages = $users_json["messages"];
 
     foreach ($messages as $message) {
-        if ($message['user'] == $user || $user == "default") {
+        if ($message["user"] == $user || $user == "default") {
             echo "<div class = \"message-wrapper\">";
             echo "<p class=\"message-info\">[" . $message["date"] . "] " . $message["user"] . "</p>";
             echo "<p class=\"message-text\">" . $message["message"] . "</p>";
