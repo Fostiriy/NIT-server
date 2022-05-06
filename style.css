@@ -1,0 +1,27 @@
+body {
+    margin: 10vh 10vw;
+}
+
+div {
+    margin: 10px 0;
+}
+
+p {
+    margin: 0;
+}
+
+.input-wrapper {
+    display: flex;
+}
+
+.input-area {
+    height: 30px;
+    padding: 5px 20px;
+    min-width: 300px;
+    width: 30vw;
+}
+
+.input-button {
+    min-width: 80px;
+    width: 10vw;
+}
