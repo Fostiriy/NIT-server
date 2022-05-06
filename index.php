@@ -110,13 +110,13 @@ if (!isset($user) || $user == "" || $user == "default") {
         ];
         file_put_contents("users.json", json_encode($users_json));
         add_message($user);
-        print_messages("default");
+        print_messages($user);
     } else { // checking password
         $proper_password = get_password($user);
 
         if ($password == $proper_password) {
             add_message($user);
-            print_messages("default");
+            print_messages($user);
         } else {
             echo "<p style='color: darkred'><i>Неверный пароль</i></p>";
         }
