@@ -45,9 +45,8 @@ function print_messages($user)
     }
 }
 
-function get_user($user)
+function add_message($user)
 {
-    $password = $_GET["password"];
     $message = $_GET["message"];
     $users_json = json_decode(file_get_contents("users.json"), true);
 
@@ -60,8 +59,6 @@ function get_user($user)
         ];
         file_put_contents("users.json", json_encode($users_json));
     }
-
-    print_messages($user);
 }
 
 function is_user_exists($user)
@@ -99,23 +96,27 @@ $user = $_GET["user"];
 $password = $_GET["password"];
 
 if (!isset($user) || $user == "" || $user == "default") {
-    get_user("default");
+    add_message("default");
+    print_messages("default");
 } elseif (isset($password) && $password != "") {
     $users_json = json_decode(file_get_contents("users.json"), true);
 
     // adding user
     if (!is_user_exists($user)) {
-        echo "<p><i>Создан пользователь</i> <b>$user</b></p>";
+        echo "<p><i>Создан пользователь <b>$user</b></i></p>";
         $users_json["users"][] = [
             "user" => $user,
             "password" => $password
         ];
         file_put_contents("users.json", json_encode($users_json));
+        add_message($user);
+        print_messages("default");
     } else { // checking password
         $proper_password = get_password($user);
 
         if ($password == $proper_password) {
-            get_user($user);
+            add_message($user);
+            print_messages("default");
         } else {
             echo "<p style='color: darkred'><i>Неверный пароль</i></p>";
         }
