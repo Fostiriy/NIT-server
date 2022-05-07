@@ -1,0 +1,27 @@
+<html>
+<head>
+    <title>
+        {{ title }}
+    </title>
+</head>
+<body>
+<div>
+    <h1>Info about me</h1><br>
+    <div>Name: {{ info.name }}</div>
+    <div>Surname: {{ info.surname }}</div>
+    <div>
+        {% if info.age > 18 %}
+            More then 18 ({{ info.age }}.
+        {% else %}
+            Child
+        {% endif %}
+    </div>
+</div>
+<div>
+    {% for type, contact in contacts %}
+        <h2>{{ type }}</h2>
+        <i>{{ contact }}</i>
+    {% endfor %}
+</div>
+</body>
+</html>
