@@ -53,7 +53,7 @@ class ChatHandler
             file_put_contents("users.json", json_encode($users_json));
             try {
                 $query = $this->DBH->prepare("SELECT user_id FROM user WHERE user_name = ?");
-                $query->execute($user);
+                $query->execute([$user]);
                 $author_id = $query->fetchColumn();
                 $query = $this->DBH->prepare("INSERT INTO chat(message_date, author_id, message_text) VALUE (?, ?, ?)");
                 $query->execute([
