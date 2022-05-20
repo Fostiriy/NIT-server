@@ -4,6 +4,16 @@ namespace Chat;
 
 class ChatHandler
 {
+    private $twig;
+
+    /**
+     * @param $twig
+     */
+    public function __construct($twig)
+    {
+        $this->twig = $twig;
+    }
+
     public function print_messages($user)
     {
         $users_json = json_decode(file_get_contents("users.json"), true);
@@ -11,10 +21,7 @@ class ChatHandler
 
         foreach ($messages as $message) {
             if ($message["user"] == $user || $user == "default") {
-                echo "<div class = \"message-wrapper\">";
-                echo "<p class=\"message-info\">[" . $message["date"] . "] " . $message["user"] . "</p>";
-                echo "<p class=\"message-text\">" . $message["message"] . "</p>";
-                echo "</div>";
+                $this->twig->display("web/message.html.twig", ["message" => $message,]);
             }
         }
     }

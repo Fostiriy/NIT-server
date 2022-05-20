@@ -1,9 +1,6 @@
 <?php
 
-use Application\Web\AboutMyselfController;
 use Chat\ChatHandler;
-use Chat\PageBuilder;
-use Domain\DTO\InfoDTO;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -12,12 +9,12 @@ require_once dirname(__DIR__) . "/vendor/autoload.php";
 $loader = new FilesystemLoader(dirname(__DIR__) . "/templates/");
 $twig = new Environment($loader);
 $log = new Monolog\Logger('name');
-$log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
-$log->warning('Foo');
+//$log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
+//$log->warning('Foo');
 
 $twig->display("web/chat.html.twig");
 
-$chat = new ChatHandler();
+$chat = new ChatHandler($twig);
 
 $user = empty($_GET["user"]) ? "" : $_GET["user"];
 $password = empty($_GET["password"]) ? "" : $_GET["password"];
