@@ -1,14 +1,18 @@
 <?php
 
-spl_autoload_register(function ($class_name) {
-    $dir = dirname(__DIR__) . "/src/";
-    $extension = ".php";
-    $path = $dir . str_replace("\\", "/", $class_name) . $extension;
-    require_once $path;
-});
-
+use Application\Web\AboutMyselfController;
 use Chat\ChatHandler;
 use Chat\PageBuilder;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+
+require_once dirname(__DIR__) . "/vendor/autoload.php";
+
+$loader = new FilesystemLoader(dirname(__DIR__) . "/templates/");
+$twig = new Environment($loader);
+$log = new Monolog\Logger('name');
+$log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
+$log->warning('Foo');
 
 $pageBuilder = new PageBuilder();
 $chat = new ChatHandler();

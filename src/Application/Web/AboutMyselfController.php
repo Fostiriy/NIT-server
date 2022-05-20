@@ -1,13 +1,21 @@
 <?php
 
-namespace App\Application\Web;
+namespace Application\Web;
 
-use App\Domain\DTO\InfoDTO;
+use Domain\DTO\InfoDTO;
 use Twig\Environment;
 
 class AboutMyselfController
 {
     private $twig;
+
+    /**
+     * @param $twig
+     */
+    public function __construct($twig)
+    {
+        $this->twig = $twig;
+    }
 
     /**
      * @return Environment
@@ -21,11 +29,6 @@ class AboutMyselfController
      * @param Environment $twig
      */
     public function setTwig($twig)
-    {
-        $this->twig = $twig;
-    }
-
-    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
     }

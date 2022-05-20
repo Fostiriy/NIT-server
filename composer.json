@@ -3,10 +3,11 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Fostiriy\\App3\\": "src/"
+            "": "src/"
         }
     },
     "require": {
-        "twig/twig": "^3.3"
+        "twig/twig": "^3.3",
+        "monolog/monolog": "^2.6"
     }
 }
