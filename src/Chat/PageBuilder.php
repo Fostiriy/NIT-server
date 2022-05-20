@@ -5,7 +5,7 @@ class PageBuilder
 {
     public function buildChatPage()
     {
-        echo '<link rel="stylesheet" href="../public/style.css">
+        echo '<link rel="stylesheet" href="style.css">
 <div>
     <p>Введите имя пользователя и пароль, опционально сообщение. Введённое сообщение будет сохранено, и вы увидите все
         сообщения пользователя.</p>
