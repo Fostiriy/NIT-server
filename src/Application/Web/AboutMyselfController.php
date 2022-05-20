@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Application\Web;
+namespace Application\Web;
 
-use App\Domain\DTO\InfoDTO;
+use Domain\DTO\InfoDTO;
 use Twig\Environment;
 
 class AboutMyselfController

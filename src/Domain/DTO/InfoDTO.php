@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DTO;
+namespace Domain\DTO;
 
 class InfoDTO {
     private $name;
