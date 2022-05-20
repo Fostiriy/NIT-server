@@ -1,0 +1,5 @@
+[2022-05-20T21:27:04.732610+10:00] login.ERROR: Wrong password {"username":"a1"} []
+[2022-05-20T21:27:11.863425+10:00] login.INFO: User signed in {"username":"user"} []
+[2022-05-20T21:27:17.342587+10:00] login.INFO: User signed in {"username":"user"} []
+[2022-05-20T21:27:17.344034+10:00] chat.INFO: New message {"username":"user"} []
+[2022-05-20T21:28:30.902892+10:00] login.INFO: Adding a new user {"username":"a2"} []

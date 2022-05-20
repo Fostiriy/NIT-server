@@ -2,9 +2,14 @@
 
 namespace Chat;
 
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
+
 class ChatHandler
 {
     private $twig;
+    private $log;
+    private $chat_handler;
 
     /**
      * @param $twig
@@ -12,6 +17,8 @@ class ChatHandler
     public function __construct($twig)
     {
         $this->twig = $twig;
+        $this->log = new Logger('chat');
+        $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
     }
 
     public function print_messages($user)
@@ -39,6 +46,9 @@ class ChatHandler
                 "message" => $message
             ];
             file_put_contents("users.json", json_encode($users_json));
+
+            $this->log->pushHandler($this->chat_handler);
+            $this->log->info("New message", ["username" => $user]);
         }
     }
 
