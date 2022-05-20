@@ -3,6 +3,7 @@
 use Application\Web\AboutMyselfController;
 use Chat\ChatHandler;
 use Chat\PageBuilder;
+use Domain\DTO\InfoDTO;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -14,10 +15,9 @@ $log = new Monolog\Logger('name');
 $log->pushHandler(new Monolog\Handler\StreamHandler('app.log', Monolog\Logger::WARNING));
 $log->warning('Foo');
 
-$pageBuilder = new PageBuilder();
-$chat = new ChatHandler();
+$twig->display("web/chat.html.twig");
 
-$pageBuilder->buildChatPage();
+$chat = new ChatHandler();
 
 $user = empty($_GET["user"]) ? "" : $_GET["user"];
 $password = empty($_GET["password"]) ? "" : $_GET["password"];
