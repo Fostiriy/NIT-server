@@ -8,13 +8,27 @@ use Twig\Loader\FilesystemLoader;
 
 require_once dirname(__DIR__) . "/vendor/autoload.php";
 
+try {
+    $host = "localhost";
+    $dbname = "chat";
+    $user = "fostiriy";
+    $pass = "RTrtV0h$";
+    $DBH = new PDO("mysql:host=$host;port=3306;dbname=$dbname", $user, $pass);
+    $DBH->exec("USE chat");
+} catch (PDOException $e) {
+    echo $e->getMessage();
+}
+
 $loader = new FilesystemLoader(dirname(__DIR__) . "/templates/");
 $twig = new Environment($loader);
+
 $log = new Logger('login');
 $user_handler = new StreamHandler('chat.log', Logger::INFO);
 $log->pushHandler($user_handler);
+
+$chat = new ChatHandler($twig, $DBH);
+
 $twig->display("web/chat.html.twig");
-$chat = new ChatHandler($twig, $log);
 
 $user = empty($_GET["user"]) ? "" : $_GET["user"];
 $password = empty($_GET["password"]) ? "" : $_GET["password"];
@@ -34,6 +48,14 @@ if (!isset($user) || $user == "" || $user == "default") {
             "password" => $password
         ];
         file_put_contents("users.json", json_encode($users_json));
+
+        try {
+            $query = $DBH->prepare("INSERT INTO user(user_name, password_code) VALUE (?, ?)");
+            $query->execute([$user, $password]);
+        } catch (PDOException $e) {
+            echo "Error!: " . $e->getMessage() . "<br/>";
+        }
+
         $chat->add_message($user);
         $chat->print_messages($user);
     } else { // checking password
