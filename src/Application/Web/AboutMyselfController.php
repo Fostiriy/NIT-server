@@ -32,6 +32,7 @@ class AboutMyselfController
 
     public function __invoke()
     {
+
         $info = new InfoDTO();
         $info->setName("Alexey");
         $info->setSurname("Burakov");
