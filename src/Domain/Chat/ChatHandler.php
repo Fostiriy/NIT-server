@@ -34,6 +34,12 @@ class ChatHandler
     {
         try {
             if ($user_name === "admin") {
+
+                $users = $this->user->getAll();
+                echo '<pre>';
+                print_r($users);
+                echo '</pre>';
+
                 $query = $this->DBH->prepare("SELECT message_date, message_text, 
        (SELECT user_name FROM user WHERE user_id = author_id) user_name FROM chat");
                 $query->execute();
