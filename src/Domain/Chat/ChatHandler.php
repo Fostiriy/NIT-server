@@ -2,6 +2,7 @@
 
 namespace Domain\Chat;
 
+use Domain\Entity\User;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PDO;
@@ -13,17 +14,20 @@ class ChatHandler
     private $log;
     private $chat_handler;
     private $DBH;
+    private User $user;
 
     /**
      * @param $twig
      * @param $DBH
+     * @param $user
      */
-    public function __construct($twig, $DBH)
+    public function __construct($twig, $DBH, $user)
     {
         $this->twig = $twig;
         $this->log = new Logger('chat');
         $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
         $this->DBH = $DBH;
+        $this->user = $user;
     }
 
     public function print_messages($user_name)
@@ -34,9 +38,8 @@ class ChatHandler
        (SELECT user_name FROM user WHERE user_id = author_id) user_name FROM chat");
                 $query->execute();
             } else {
-                $query = $this->DBH->prepare("SELECT user_id FROM user WHERE user_name = ?");
-                $query->execute([$user_name]);
-                $author_id = $query->fetchColumn();
+                $this->user->setUserName($user_name);
+                $author_id = $this->user->findID();
 
                 $query = $this->DBH->prepare("SELECT message_date, message_text, ? user_name FROM chat WHERE author_id = ?");
                 $query->execute([$user_name, $author_id]);
@@ -84,9 +87,9 @@ class ChatHandler
         $result = false;
 
         try {
-            $query = $this->DBH->prepare("SELECT user_id FROM user WHERE user_name = ?");
-            $query->execute([$user_name]);
-            $author_id = $query->fetchColumn();
+//            $query = $this->DBH->prepare("SELECT user_id FROM user WHERE user_name = ?");
+//            $query->execute([$user_name]);
+            $author_id = $this->user->getByFieldValues("user_name", [$user_name])->fetchColumn("user_id");
             $result = !empty($author_id);
         } catch (PDOException $e) {
             echo "Error!: " . $e->getMessage() . "<br/>";

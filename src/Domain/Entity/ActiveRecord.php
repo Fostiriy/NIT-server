@@ -36,5 +36,5 @@ abstract class ActiveRecord
     // Удаление записи
     abstract public function remove(): bool;
 
-    abstract public function getID(): int;
+    abstract public function findID(): int;
 }

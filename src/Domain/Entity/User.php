@@ -84,7 +84,7 @@ class User extends ActiveRecord
         $sql = "DELETE FROM " . self::TABLE . " WHERE user_id = ?";
         $query = $this->getConnection()->prepare($sql);
         try {
-            $query->execute([$this->getID()]);
+            $query->execute([$this->findID()]);
         } catch (\Throwable $exception) {
 
         }
@@ -92,12 +92,12 @@ class User extends ActiveRecord
         return $query->rowCount() > 0;
     }
 
-    public function getID(): int
+    public function findID(): int
     {
-        $sql = "SELECT user_id FROM " . self::TABLE . " WHERE user_name = ? AND password = ?";
+        $sql = "SELECT user_id FROM " . self::TABLE . " WHERE user_name = ?";
         $query = $this->getConnection()->prepare($sql);
         try {
-            $query->execute([$this->user_name, $this->password]);
+            $query->execute([$this->user_name]);
         } catch (\Throwable $exception) {
 
         }
