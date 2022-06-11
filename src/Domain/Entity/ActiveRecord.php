@@ -16,7 +16,7 @@ abstract class ActiveRecord
     /**
      * @return mixed
      */
-    public function getConnection(): PDO
+    public function getConnection(): \PDO
     {
         return $this->connection;
     }
@@ -31,10 +31,10 @@ abstract class ActiveRecord
     abstract public function getByFieldValues(string $fieldName, array $fieldValues): array;
 
     // Сохранение записи
-    abstract public function save(): void;
+    abstract public function save(): bool;
 
     // Удаление записи
-    abstract public function remove(): void;
+    abstract public function remove(): bool;
 
     abstract public function getID(): int;
 }

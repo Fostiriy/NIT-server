@@ -66,7 +66,7 @@ class User extends ActiveRecord
         return $query->fetchAll();
     }
 
-    public function save(): void
+    public function save(): bool
     {
         $sql = "INSERT INTO " . self::TABLE . "(user_name, password) VALUE (?, ?)";
         $query = $this->getConnection()->prepare($sql);
@@ -75,9 +75,11 @@ class User extends ActiveRecord
         } catch (\Throwable $exception) {
 
         }
+
+        return $query->rowCount() > 0;
     }
 
-    public function remove(): void
+    public function remove(): bool
     {
         $sql = "DELETE FROM " . self::TABLE . " WHERE user_id = ?";
         $query = $this->getConnection()->prepare($sql);
@@ -86,6 +88,8 @@ class User extends ActiveRecord
         } catch (\Throwable $exception) {
 
         }
+
+        return $query->rowCount() > 0;
     }
 
     public function getID(): int
@@ -99,5 +103,27 @@ class User extends ActiveRecord
         }
 
         return $query->fetchColumn();
+    }
+
+    /**
+     * @param string $user_name
+     */
+    public function setUserName(string $user_name): void
+    {
+        $this->user_name = $user_name;
+    }
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password): void
+    {
+        $this->password = $password;
+    }
+
+    public function setUserInfo(string $user_name, string $password): void
+    {
+        $this->setUserName($user_name);
+        $this->setPassword($password);
     }
 }
