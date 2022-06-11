@@ -1,6 +1,6 @@
 <?php
 
-namespace Chat;
+namespace Domain\Chat;
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -95,12 +95,12 @@ class ChatHandler
         return $result;
     }
 
-    public function get_password($user_name)
+    public function get_password($user_name): string
     {
         $result = "";
 
         try {
-            $query = $this->DBH->prepare("SELECT password_code FROM user WHERE user_name = ?");
+            $query = $this->DBH->prepare("SELECT password FROM user WHERE user_name = ?");
             $query->execute([$user_name]);
             $result = $query->fetchColumn();
         } catch (PDOException $e) {

@@ -1,6 +1,6 @@
 <?php
 
-use Chat\ChatHandler;
+use Domain\Chat\ChatHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Twig\Environment;
@@ -40,7 +40,7 @@ if (!isset($user_name) || $user_name == "" || $user_name == "default") {
     // adding user
     if (!$chat->is_user_exists($user_name)) {
         try {
-            $query = $DBH->prepare("INSERT INTO user(user_name, password_code) VALUE (?, ?)");
+            $query = $DBH->prepare("INSERT INTO user(user_name, password) VALUE (?, ?)");
             $query->execute([$user_name, $password]);
         } catch (PDOException $e) {
             echo "Error!: " . $e->getMessage() . "<br/>";
