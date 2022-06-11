@@ -6,9 +6,9 @@ namespace Domain\Entity;
 
 abstract class ActiveRecord
 {
-    private $connection;
+    private \PDO $connection;
 
-    public function __constuct(\PDO $connection)
+    public function __construct(\PDO $connection)
     {
         $this->connection = $connection;
     }
@@ -35,4 +35,6 @@ abstract class ActiveRecord
 
     // Удаление записи
     abstract public function remove(): void;
+
+    abstract public function getID(): int;
 }

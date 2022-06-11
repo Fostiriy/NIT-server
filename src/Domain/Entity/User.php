@@ -6,18 +6,23 @@ class User extends ActiveRecord
 {
     private const TABLE = "user";
 
-    private int $user_id;
     private string $user_name;
     private string $password;
 
-    public static function createNewUser(string $user_id, string $user_name, string $password): User
+    /**
+     * @param string $user_name
+     * @param string $password
+     */
+    public function __construct(\PDO $connection, string $user_name = "", string $password = "")
     {
-        $user = new User();
-        $user->user_id = $user_id;
-        $user->user_name = $user_name;
-        $user->password = $password;
+        parent::__construct($connection);
+        $this->user_name = $user_name;
+        $this->password = $password;
+    }
 
-        return $user;
+    public function createNewUser(string $user_name, string $password): User
+    {
+        return new User($this->getConnection(), $user_name, $password);
     }
 
     public function getAll(): array
@@ -32,7 +37,6 @@ class User extends ActiveRecord
 
         return $query->fetchAll();
     }
-
 
     public function getByID(int $id): object
     {
@@ -64,10 +68,10 @@ class User extends ActiveRecord
 
     public function save(): void
     {
-        $sql = "INSERT INTO " . self::TABLE . "(user_id, user_name, password) VALUE (?, ?, ?)";
+        $sql = "INSERT INTO " . self::TABLE . "(user_name, password) VALUE (?, ?)";
         $query = $this->getConnection()->prepare($sql);
         try {
-            $query->execute([$this->user_id, $this->user_name, $this->password]);
+            $query->execute([$this->user_name, $this->password]);
         } catch (\Throwable $exception) {
 
         }
@@ -75,60 +79,25 @@ class User extends ActiveRecord
 
     public function remove(): void
     {
-        $sql = "DELETE FROM " . self::TABLE . " WHERE user_id = ? AND user_name = ? AND password = ?";
+        $sql = "DELETE FROM " . self::TABLE . " WHERE user_id = ?";
         $query = $this->getConnection()->prepare($sql);
         try {
-            $query->execute([$this->user_id, $this->user_name, $this->password]);
+            $query->execute([$this->getID()]);
         } catch (\Throwable $exception) {
 
         }
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId(): int
+    public function getID(): int
     {
-        return $this->user_id;
-    }
+        $sql = "SELECT user_id FROM " . self::TABLE . " WHERE user_name = ? AND password = ?";
+        $query = $this->getConnection()->prepare($sql);
+        try {
+            $query->execute([$this->user_name, $this->password]);
+        } catch (\Throwable $exception) {
 
-    /**
-     * @param int $user_id
-     */
-    public function setUserId(int $user_id): void
-    {
-        $this->user_id = $user_id;
-    }
+        }
 
-    /**
-     * @return string
-     */
-    public function getUserName(): string
-    {
-        return $this->user_name;
-    }
-
-    /**
-     * @param string $user_name
-     */
-    public function setUserName(string $user_name): void
-    {
-        $this->user_name = $user_name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @param string $password
-     */
-    public function setPassword(string $password): void
-    {
-        $this->password = $password;
+        return $query->fetchColumn();
     }
 }

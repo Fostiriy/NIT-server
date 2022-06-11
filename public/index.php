@@ -1,6 +1,7 @@
 <?php
 
 use Domain\Chat\ChatHandler;
+use Domain\Entity\User;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Twig\Environment;
@@ -26,6 +27,7 @@ $log = new Logger('login');
 $user_handler = new StreamHandler('chat.log', Logger::INFO);
 $log->pushHandler($user_handler);
 
+$user = new User($DBH);
 $chat = new ChatHandler($twig, $DBH);
 
 $twig->display("web/chat.html.twig");
