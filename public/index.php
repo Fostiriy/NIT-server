@@ -37,15 +37,8 @@ if (!isset($user_name) || $user_name == "" || $user_name == "default") {
     $chat->add_message("default");
     $chat->print_messages("default");
 } elseif (isset($password) && $password != "") {
-//    $users_json = json_decode(file_get_contents("users.json"), true);
-
     // adding user
     if (!$chat->is_user_exists($user_name)) {
-//        $users_json["users"][] = [
-//            "user" => $user,
-//            "password" => $password
-//        ];
-//        file_put_contents("users.json", json_encode($users_json));
         try {
             $query = $DBH->prepare("INSERT INTO user(user_name, password_code) VALUE (?, ?)");
             $query->execute([$user_name, $password]);
