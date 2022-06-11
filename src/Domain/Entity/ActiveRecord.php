@@ -28,7 +28,7 @@ abstract class ActiveRecord
     abstract public function getByID(int $id): object;
 
     // Получение записей по значению поля из таблицы (фильтрация по полю)
-    abstract public function getByFieldValues(string $fieldName, array $fieldValues): array;
+    abstract public function getByFieldValue(string $fieldName, $fieldValue): array;
 
     // Сохранение записи
     abstract public function save(): bool;

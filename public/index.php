@@ -28,7 +28,7 @@ $user_handler = new StreamHandler('chat.log', Logger::INFO);
 $log->pushHandler($user_handler);
 
 $user = new User($DBH);
-$chat = new ChatHandler($twig, $DBH);
+$chat = new ChatHandler($twig, $DBH, $user);
 
 $twig->display("web/chat.html.twig");
 

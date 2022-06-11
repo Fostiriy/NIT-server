@@ -50,15 +50,15 @@ class User extends ActiveRecord
         }
         $result = $query->fetch(PDO::FETCH_LAZY);
 
-        return self::createNewUser($result->user_id, $result->user_name, $result->password);
+        return self::createNewUser($result->user_name, $result->password);
     }
 
-    public function getByFieldValues(string $fieldName, $fieldValues): array
+    public function getByFieldValue(string $fieldName, $fieldValue): array
     {
-        $sql = "SELECT * FROM " . self::TABLE . " WHERE ? IN(?)";
+        $sql = "SELECT * FROM " . self::TABLE . " WHERE " . $fieldName . " = ?";
         $query = $this->getConnection()->prepare($sql);
         try {
-            $query->execute([$fieldName, $fieldValues]);
+            $query->execute([$fieldValue]);
         } catch (\Throwable $exception) {
 
         }

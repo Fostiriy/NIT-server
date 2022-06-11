@@ -87,9 +87,7 @@ class ChatHandler
         $result = false;
 
         try {
-//            $query = $this->DBH->prepare("SELECT user_id FROM user WHERE user_name = ?");
-//            $query->execute([$user_name]);
-            $author_id = $this->user->getByFieldValues("user_name", [$user_name])->fetchColumn("user_id");
+            $author_id = $this->user->getByFieldValue("user_name", $user_name)[0]["user_id"];
             $result = !empty($author_id);
         } catch (PDOException $e) {
             echo "Error!: " . $e->getMessage() . "<br/>";
