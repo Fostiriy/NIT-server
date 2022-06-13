@@ -3,6 +3,7 @@
 namespace Domain\Repository;
 
 use Domain\Entity\Message;
+use PDO;
 
 class MessageRepository
 {
@@ -29,7 +30,7 @@ class MessageRepository
         $stmt = $this->connection->prepare($sql);
         $stmt->execute();
 
-        while ($row = $stmt->fetch(PDO::FETCH_LAZY)) {
+        while ($row = $stmt->fetch()) {
             $result[] = $this->dataMapper->map($row);
         }
 

@@ -3,6 +3,7 @@
 namespace Domain\Chat;
 
 use Domain\Entity\User;
+use Domain\Repository\MessageRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use PDO;
@@ -15,50 +16,49 @@ class ChatHandler
     private $chat_handler;
     private $DBH;
     private User $user;
+    private MessageRepository $messageRepository;
 
     /**
      * @param $twig
      * @param $DBH
      * @param $user
+     * @param $messageRepository
      */
-    public function __construct($twig, $DBH, $user)
+    public function __construct($twig, $DBH, $user, $messageRepository)
     {
         $this->twig = $twig;
         $this->log = new Logger('chat');
         $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
         $this->DBH = $DBH;
         $this->user = $user;
+        $this->messageRepository = $messageRepository;
     }
 
     public function print_messages($user_name)
     {
         try {
+            $messages = $this->messageRepository->getAll();
+            $author_id = 0;
             if ($user_name === "admin") {
-
                 $users = $this->user->getAll();
                 echo '<pre>';
                 print_r($users);
                 echo '</pre>';
-
-                $query = $this->DBH->prepare("SELECT message_date, message_text, 
-       (SELECT user_name FROM user WHERE user_id = author_id) user_name FROM chat");
-                $query->execute();
             } else {
                 $this->user->setUserName($user_name);
                 $author_id = $this->user->findID();
-
-                $query = $this->DBH->prepare("SELECT message_date, message_text, ? user_name FROM chat WHERE author_id = ?");
-                $query->execute([$user_name, $author_id]);
             }
 
-            while ($row = $query->fetch(PDO::FETCH_LAZY)) {
-                $this->twig->display("web/message.html.twig", [
-                    "message" => [
-                        "date" => $row->message_date,
-                        "user" => $row->user_name,
-                        "message" => $row->message_text,
-                    ],
-                ]);
+            foreach ($messages as $message) {
+                if ($author_id == 0 || $author_id == $message->getAuthorId()) {
+                    $this->twig->display("web/message.html.twig", [
+                        "message" => [
+                            "date" => $message->getMessageDate(),
+                            "user" => $this->user->getByID($message->getAuthorId())->getUserName(),
+                            "message" => $message->getMessageText(),
+                        ],
+                    ]);
+                }
             }
         } catch (PDOException $e) {
             echo "Error!: " . $e->getMessage() . "<br/>";

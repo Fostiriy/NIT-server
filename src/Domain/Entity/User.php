@@ -48,9 +48,9 @@ class User extends ActiveRecord
         } catch (\Throwable $exception) {
 
         }
-        $result = $query->fetch(PDO::FETCH_LAZY);
+        $result = $query->fetch();
 
-        return self::createNewUser($result->user_name, $result->password);
+        return self::createNewUser($result["user_name"], $result["password"]);
     }
 
     public function getByFieldValue(string $fieldName, $fieldValue): array
@@ -125,5 +125,13 @@ class User extends ActiveRecord
     {
         $this->setUserName($user_name);
         $this->setPassword($password);
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserName(): string
+    {
+        return $this->user_name;
     }
 }

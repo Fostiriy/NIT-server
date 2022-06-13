@@ -2,6 +2,8 @@
 
 use Domain\Chat\ChatHandler;
 use Domain\Entity\User;
+use Domain\Repository\DataMapper\MessageDataMapper;
+use Domain\Repository\MessageRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Twig\Environment;
@@ -28,7 +30,9 @@ $user_handler = new StreamHandler('chat.log', Logger::INFO);
 $log->pushHandler($user_handler);
 
 $user = new User($DBH);
-$chat = new ChatHandler($twig, $DBH, $user);
+$messageDataMapper = new MessageDataMapper();
+$messageRepository = new MessageRepository($DBH, $messageDataMapper);
+$chat = new ChatHandler($twig, $DBH, $user, $messageRepository);
 
 $twig->display("web/chat.html.twig");
 
