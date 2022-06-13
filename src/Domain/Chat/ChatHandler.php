@@ -92,16 +92,6 @@ class ChatHandler
 
     public function get_password($user_name): string
     {
-        $result = "";
-
-        try {
-            $query = $this->DBH->prepare("SELECT password FROM user WHERE user_name = ?");
-            $query->execute([$user_name]);
-            $result = $query->fetchColumn();
-        } catch (PDOException $e) {
-            echo "Error!: " . $e->getMessage() . "<br/>";
-        }
-
-        return $result;
+        return $this->user->getByFieldValue("user_name", $user_name)[0]["password"];
     }
 }
