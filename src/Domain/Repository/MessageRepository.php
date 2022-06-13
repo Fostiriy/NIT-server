@@ -63,7 +63,7 @@ class MessageRepository
     {
         $sql = "INSERT INTO " . self::TABLE . "(message_date, author_id, message_text) VALUE (?, ?, ?)";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($message->getInfo());
+        $stmt->execute([$message->getMessageDate(), $message->getAuthorId(), $message->getMessageText()]);
 
         return $stmt->rowCount() > 0;
     }
@@ -83,7 +83,7 @@ class MessageRepository
     {
         $sql = "SELECT message_id FROM " . self::TABLE . " WHERE message_date = ? AND author_id = ? AND message_text = ?";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute($message->getInfo());
+        $stmt->execute([$message->getMessageDate(), $message->getAuthorId(), $message->getMessageText()]);
 
         return $stmt->fetchColumn();
     }
