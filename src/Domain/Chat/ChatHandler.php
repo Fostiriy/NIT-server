@@ -15,22 +15,19 @@ class ChatHandler
     private $twig;
     private $log;
     private $chat_handler;
-    private $DBH;
     private User $user;
     private MessageRepository $messageRepository;
 
     /**
      * @param $twig
-     * @param $DBH
      * @param $user
      * @param $messageRepository
      */
-    public function __construct($twig, $DBH, $user, $messageRepository)
+    public function __construct($twig, $user, $messageRepository)
     {
         $this->twig = $twig;
         $this->log = new Logger('chat');
         $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
-        $this->DBH = $DBH;
         $this->user = $user;
         $this->messageRepository = $messageRepository;
     }

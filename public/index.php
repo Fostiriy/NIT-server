@@ -32,7 +32,7 @@ $log->pushHandler($user_handler);
 $user = new User($DBH);
 $messageDataMapper = new MessageDataMapper();
 $messageRepository = new MessageRepository($DBH, $messageDataMapper);
-$chat = new ChatHandler($twig, $DBH, $user, $messageRepository);
+$chat = new ChatHandler($twig, $user, $messageRepository);
 
 $twig->display("web/chat.html.twig");
 
