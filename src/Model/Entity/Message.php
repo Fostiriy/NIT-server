@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entity;
+namespace Model\Entity;
 
 class Message
 {

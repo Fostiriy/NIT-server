@@ -1,13 +1,12 @@
 <?php
 
-namespace Domain\Repository;
+namespace Model\Repository;
 
-use Domain\Entity\Message;
-use PDO;
+use Model\Entity\User;
 
-class MessageRepository
+class UserRepository
 {
-    private const TABLE = "chat";
+    private const TABLE = "user";
     private $connection;
     private $dataMapper;
 
@@ -37,10 +36,10 @@ class MessageRepository
         return $result;
     }
 
-    // Получение записи по id
-    public function getByID(int $id): ?Message
+    // Получение записи по ID
+    public function getByID(int $id): ?User
     {
-        $sql = "SELECT * FROM " . self::TABLE . " WHERE message_id = ?";
+        $sql = "SELECT * FROM " . self::TABLE . " WHERE user_id = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch();
@@ -59,33 +58,33 @@ class MessageRepository
     }
 
     // Сохранение записи
-    public function save(Message $message): bool
+    public function save(User $user): bool
     {
-        $sql = "INSERT INTO " . self::TABLE . "(message_date, author_id, message_text) VALUE (?, ?, ?)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute([$message->getMessageDate(), $message->getAuthorId(), $message->getMessageText()]);
+        $sql = "INSERT INTO " . self::TABLE . "(user_name, password) VALUE (?, ?)";
+        $query = $this->connection->prepare($sql);
+        $query->execute([$user->getUserName(), $user->getPassword()]);
 
-        return $stmt->rowCount() > 0;
+
+        return $query->rowCount() > 0;
     }
 
     // Удаление записи
-    public function remove(Message $message): bool
+    public function remove(User $user): bool
     {
-        $sql = "DELETE FROM " . self::TABLE . " WHERE message_id = ?";
+        $sql = "DELETE FROM " . self::TABLE . " WHERE user_id = ?";
         $stmt = $this->connection->prepare($sql);
-        $stmt->execute([$this->findID($message)]);
+        $stmt->execute([$this->findID($user)]);
 
         return $stmt->rowCount() > 0;
     }
 
     // Поиск ID записи
-    public function findID(Message $message): int
+    public function findID(User $user): int
     {
-        $sql = "SELECT message_id FROM " . self::TABLE . " WHERE message_date = ? AND author_id = ? AND message_text = ?";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->execute([$message->getMessageDate(), $message->getAuthorId(), $message->getMessageText()]);
+        $sql = "SELECT user_id FROM " . self::TABLE . " WHERE user_name = ?";
+        $query = $this->connection->prepare($sql);
+        $query->execute([$user->getUserName()]);
 
-        return $stmt->fetchColumn();
+        return $query->fetchColumn();
     }
-
 }

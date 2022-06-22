@@ -1,10 +1,10 @@
 <?php
 
-namespace Domain\Repository\DataMapper;
+namespace Model\Mapper;
 
-use Domain\Entity\Message;
+use Model\Entity\Message;
 
-class MessageDataMapper
+class MessageMapper
 {
     private const MAP = [
         "message_date" => [

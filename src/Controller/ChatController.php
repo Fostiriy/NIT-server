@@ -1,35 +1,36 @@
 <?php
 
-namespace Domain\Chat;
+namespace Controller;
 
-use Domain\Entity\Message;
-use Domain\Entity\User;
-use Domain\Repository\MessageRepository;
+use Model\Entity\Message;
+use Model\Entity\User;
+use Model\Repository\MessageRepository;
+use Model\Repository\UserRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
-use PDO;
 use PDOException;
 
-class ChatHandler
+class ChatController
 {
     private $twig;
     private $log;
     private $chat_handler;
-    private User $user;
     private MessageRepository $messageRepository;
+    private UserRepository $userRepository;
 
     /**
      * @param $twig
      * @param $user
      * @param $messageRepository
+     * @param $userRepository
      */
-    public function __construct($twig, $user, $messageRepository)
+    public function __construct($twig, $messageRepository, $userRepository)
     {
         $this->twig = $twig;
         $this->log = new Logger('chat');
         $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
-        $this->user = $user;
         $this->messageRepository = $messageRepository;
+        $this->userRepository = $userRepository;
     }
 
     public function print_messages($user_name)
@@ -37,13 +38,12 @@ class ChatHandler
         $messages = $this->messageRepository->getAll();
         $author_id = 0;
         if ($user_name === "admin") {
-            $users = $this->user->getAll();
+            $users = $this->userRepository->getAll();
             echo '<pre>';
             print_r($users);
             echo '</pre>';
         } else {
-            $this->user->setUserName($user_name);
-            $author_id = $this->user->findID();
+            $author_id = $this->userRepository->findID(new User($user_name));
         }
 
         foreach ($messages as $message) {
@@ -51,7 +51,7 @@ class ChatHandler
                 $this->twig->display("web/message.html.twig", [
                     "message" => [
                         "date" => $message->getMessageDate(),
-                        "user" => $this->user->getByID($message->getAuthorId())->getUserName(),
+                        "user" => $this->userRepository->getByID($message->getAuthorId())->getUserName(),
                         "message" => $message->getMessageText(),
                     ],
                 ]);
@@ -65,8 +65,7 @@ class ChatHandler
 
         // adding message
         if (isset($messageText) && $messageText !== "") {
-            $this->user->setUserName($user_name);
-            $this->messageRepository->save(new Message($this->user->findID(), $messageText));
+            $this->messageRepository->save(new Message($this->userRepository->findID(new User($user_name)), $messageText));
 
             $this->log->pushHandler($this->chat_handler);
             $this->log->info("New message", ["username" => $user_name]);
@@ -78,7 +77,7 @@ class ChatHandler
         $result = false;
 
         try {
-            $author_id = $this->user->getByFieldValue("user_name", $user_name)[0]["user_id"];
+            $author_id = $this->userRepository->getByFieldValue("user_name", $user_name)[0]["user_id"];
             $result = !empty($author_id);
         } catch (PDOException $e) {
             echo "Error!: " . $e->getMessage() . "<br/>";
@@ -89,6 +88,6 @@ class ChatHandler
 
     public function get_password($user_name): string
     {
-        return $this->user->getByFieldValue("user_name", $user_name)[0]["password"];
+        return $this->userRepository->getByFieldValue("user_name", $user_name)[0]["password"];
     }
 }

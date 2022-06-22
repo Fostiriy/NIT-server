@@ -1,9 +1,11 @@
 <?php
 
-use Domain\Chat\ChatHandler;
-use Domain\Entity\User;
-use Domain\Repository\DataMapper\MessageDataMapper;
-use Domain\Repository\MessageRepository;
+use Controller\ChatController;
+use Model\Entity\User;
+use Model\Mapper\MessageMapper;
+use Model\Mapper\UserMapper;
+use Model\Repository\MessageRepository;
+use Model\Repository\UserRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Twig\Environment;
@@ -29,10 +31,11 @@ $log = new Logger('login');
 $user_handler = new StreamHandler('chat.log', Logger::INFO);
 $log->pushHandler($user_handler);
 
-$user = new User($DBH);
-$messageDataMapper = new MessageDataMapper();
+$messageDataMapper = new MessageMapper();
+$userDataMapper = new UserMapper();
 $messageRepository = new MessageRepository($DBH, $messageDataMapper);
-$chat = new ChatHandler($twig, $user, $messageRepository);
+$userRepository = new UserRepository($DBH, $userDataMapper);
+$chat = new ChatController($twig, $messageRepository, $userRepository);
 
 $twig->display("web/chat.html.twig");
 
@@ -44,8 +47,7 @@ if (isset($user_name) && $user_name != "") {
         // adding user
         if (!$chat->is_user_exists($user_name)) {
             try {
-                $user->setUserInfo($user_name, $password);
-                if ($user->save()) {
+                if ($userRepository->save(new User($user_name, $password))) {
                     echo "<p><i>Создан пользователь <b>$user_name</b></i></p>";
                     $log->info("Adding a new user", ["username" => $user_name]);
 
