@@ -10,13 +10,13 @@
 </head>
 <body>
 
-<form action="../../logout.php">
-    <label>Привет, {{ name }}</label>
+<form action="logout.php">
+    <label>Привет, {{ user_name }}</label>
     <br>
     <button type="submit">Выйти</button>
 </form>
 
-<form method="get">
+<form action="addMessage.php" method="post">
     <div class="input-wrapper">
         <label>
             <input class="input-area" type="text" name="message" placeholder="Напишите сообщение..." id="message">

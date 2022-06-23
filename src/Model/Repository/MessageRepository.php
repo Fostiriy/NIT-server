@@ -3,6 +3,7 @@
 namespace Model\Repository;
 
 use Model\Entity\Message;
+use Model\Mapper\MessageMapper;
 
 class MessageRepository
 {
@@ -14,10 +15,10 @@ class MessageRepository
      * @param $connection
      * @param $dataMapper
      */
-    public function __construct($connection, $dataMapper)
+    public function __construct($connection)
     {
         $this->connection = $connection;
-        $this->dataMapper = $dataMapper;
+        $this->dataMapper = new MessageMapper();
     }
 
     // Получение всех записей

@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Twig\Environment;
+use Controller\ChatController;
 
 class AuthController
 {
@@ -13,13 +14,14 @@ class AuthController
         $this->twig = $twig;
     }
 
-    public function __invokeLogMenu()
+    public function showAuthPage()
     {
         $this->twig->display("web/auth.html.twig");
     }
 
-    public function __invokeShowTable($result, $name)
+    public function showUserMessagesPage($userName)
     {
-        $this->twig->display("web/user-messages.html.twig", ['t' => $result, 'name' => $name]);
+        $this->twig->display("web/user-messages.html.twig", ["user_name" => $userName]);
+        $chatController = new ChatController($twig);
     }
 }

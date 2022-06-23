@@ -3,6 +3,7 @@
 namespace Model\Repository;
 
 use Model\Entity\User;
+use Model\Mapper\UserMapper;
 
 class UserRepository
 {
@@ -14,10 +15,10 @@ class UserRepository
      * @param $connection
      * @param $dataMapper
      */
-    public function __construct($connection, $dataMapper)
+    public function __construct($connection)
     {
         $this->connection = $connection;
-        $this->dataMapper = $dataMapper;
+        $this->dataMapper = new UserMapper();
     }
 
     // Получение всех записей
@@ -50,11 +51,17 @@ class UserRepository
     // Получение записей по значению поля из таблицы (фильтрация по полю)
     public function getByFieldValue(string $fieldName, $fieldValue): array
     {
+        $result = [];
+
         $sql = "SELECT * FROM " . self::TABLE . " WHERE " . $fieldName . " = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->execute([$fieldValue]);
 
-        return $stmt->fetchAll();
+        while ($row = $stmt->fetch()) {
+            $result[] = $this->dataMapper->map($row);
+        }
+
+        return $result;
     }
 
     // Сохранение записи
@@ -63,7 +70,6 @@ class UserRepository
         $sql = "INSERT INTO " . self::TABLE . "(user_name, password) VALUE (?, ?)";
         $query = $this->connection->prepare($sql);
         $query->execute([$user->getUserName(), $user->getPassword()]);
-
 
         return $query->rowCount() > 0;
     }

@@ -8,6 +8,7 @@ use Model\Repository\MessageRepository;
 use Model\Repository\UserRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use PDO;
 use PDOException;
 
 class ChatController
@@ -20,17 +21,21 @@ class ChatController
 
     /**
      * @param $twig
-     * @param $user
-     * @param $messageRepository
-     * @param $userRepository
      */
-    public function __construct($twig, $messageRepository, $userRepository)
+    public function __construct($twig)
     {
         $this->twig = $twig;
         $this->log = new Logger('chat');
         $this->chat_handler = new StreamHandler('chat.log', Logger::INFO);
-        $this->messageRepository = $messageRepository;
-        $this->userRepository = $userRepository;
+
+        $host = "localhost";
+        $dbname = "chat";
+        $user_name = "fostiriy";
+        $pass = "RTrtV0h$";
+        $DBH = new PDO("mysql:host=$host;port=3306;dbname=$dbname", $user_name, $pass);
+        $DBH->exec("USE chat");
+        $this->messageRepository = new MessageRepository($DBH);
+        $this->userRepository = new UserRepository($DBH);
     }
 
     public function print_messages($user_name)
@@ -61,7 +66,7 @@ class ChatController
 
     public function add_message($user_name)
     {
-        $messageText = empty($_GET["message"]) ? "" : $_GET["message"];
+        $messageText = empty($_POST["message"]) ? "" : $_POST["message"];
 
         // adding message
         if (isset($messageText) && $messageText !== "") {
@@ -70,6 +75,14 @@ class ChatController
             $this->log->pushHandler($this->chat_handler);
             $this->log->info("New message", ["username" => $user_name]);
         }
+
+        $this->twig->display("web/message.html.twig", [
+            "message" => [
+                "date" => date('Y-m-d H:i:s', time()),
+                "user" => $user_name,
+                "message" => $messageText,
+            ],
+        ]);
     }
 
     public function is_user_exists($user_name): bool
